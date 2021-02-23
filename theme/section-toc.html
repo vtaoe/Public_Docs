@@ -1,0 +1,13 @@
+
+{% for nav_item2 in active_section.children %}
+  <!-- <li class="section-toc__item{% if nav_item2.active%} section-toc__item--active{%endif%}"><a href="{{ nav_item2.url|url }}" class="section-toc__link{% if nav_item2.active%} section-toc__link--active{%endif%}">{% if nav_item2.active%}<span class="visually-hidden">Current: </span> {%endif%}{{ nav_item2.title }}</a></li> -->
+  <li class="menu__item is-leaf leaf">
+    <a href="{{ nav_item2.url|url }}" title="" class="menu__link {% if nav_item2.active%}active{%endif%}">
+      {% if nav_item2.active%}
+        <span class="visually-hidden">Current: </span>
+      {%endif%}
+      {{ nav_item2.title }}
+    </a>
+  </li>
+{% endfor %}
+    

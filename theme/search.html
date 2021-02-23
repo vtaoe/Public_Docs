@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  {{ super() }}
+{% endblock styles %}
+
+{% block search %}
+{% include "searchbox.html" %}
+{% endblock search %}
+
+{% block content %}
+  <h1>Search Results</h1>
+  <div id="mkdocs-search-results">
+    Searching...
+  </div>
+{% endblock content %}
+

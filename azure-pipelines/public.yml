@@ -1,0 +1,17 @@
+
+
+trigger:
+- public
+
+
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-18.04'
+  variables:
+    # this needs to be set
+    # AZURE_SUBSCRIPTION: '?'
+    # AZURE_WEB_APP_NAME: '?'
+    PIP_CACHE_DIR: $(Pipeline.Workspace)/.pip
+  steps:
+  - template: app-template.yml  # Template reference

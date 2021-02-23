@@ -1,0 +1,281 @@
+
+code {
+  background-color: #eee;
+  border-radius: 15px
+}
+
+.skiptocontent {
+  background-color: #030;
+  border-bottom-left-radius: 15px;
+  color: #ccc
+}
+
+.skiptocontent:focus {
+  background-color: #030;
+  color: #fff
+}
+
+.skiptotop:before {
+  color: #085f5f
+}
+
+.skiptotop {
+  background-color: #fff;
+  border: 1px solid #085f5f;
+  border-right: 0;
+  border-bottom: 0;
+  border-top-left-radius: 15px;
+  color: #085f5f
+}
+
+button {
+  cursor: pointer
+}
+
+.hidden {
+  display: none
+}
+
+.visually-hidden {
+  height: 1px;
+  left: -10000px;
+  overflow: hidden;
+  position: absolute;
+  top: auto;
+  width: 1px
+}
+
+.form__input {
+  font-size: 1.2em
+}
+
+.form__input:focus {
+  content: " "
+}
+
+blockquote {
+  padding-left: 1em
+}
+
+code {
+  clear: both;
+  display: block;
+  font-family: 'courier new', serif;
+  line-height: 1.6;
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  white-space: pre
+}
+
+.form__btn-submit {
+  margin: 0 0 0.25em 0;
+  padding: 0.5em;
+  vertical-align: bottom
+}
+
+.form--search {
+  float: right;
+  margin: 2em 2em 0 2em;
+  padding: 0.3em 0.75em
+}
+
+.form__input {
+  margin: 0.25em 0;
+  padding: 0.25em 0.5em
+}
+
+.header-main {
+  display: inline;
+  float: left;
+  position: relative;
+  top: 0;
+  width: 50%
+}
+
+.header-main__heading {
+  margin: 0 0 0 1.5em;
+  text-align: left
+}
+
+.skiptocontent {
+  padding: 0.25em 0.25em 0.25em 0.75em;
+  position: absolute;
+  right: 0;
+  top: -40px;
+  transition: top 1s ease-out, background 1s linear;
+  z-index: 3
+}
+
+.skiptocontent:focus {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: top .1s ease-in, background .5s linear
+}
+
+.skiptotop:before {
+  vertical-align: middle
+}
+
+.skiptotop {
+  bottom: 0;
+  padding: 0.5em 0.25em 0.25em 0.75em;
+  position: fixed;
+  right: 0;
+  z-index: 1
+}
+
+.wrapper {
+  margin: 0 auto;
+  position: relative
+}
+
+/* phone-and-tablet */
+
+@media only screen and (max-width:1199px) {
+  /* BEGIN page TOC menu panel */
+  .maincontent {
+    padding: 0;
+    transition: margin-left .5s
+  }
+  .page-toc {
+    background-color: #eee;
+    border-right: 1px solid #999;
+    height: 100%;
+    left: 0;
+    overflow-x: hidden;
+    position: fixed;
+    top: 0;
+    transition: 0.5s;
+    width: 0;
+    z-index: 2
+  }
+  .page-toc__closebtn {
+    border: 1px solid #085f5f;
+    font-size: 1.4em;
+    margin-top: 0.5em;
+    padding: 0 0.2em;
+    position: absolute;
+    right: 0.5em;
+    text-decoration: none;
+    top: 0
+  }
+  .page-toc__heading {
+    margin-left: 1em
+  }
+  .page-toc__link {
+    color: #818181;
+    display: block;
+    font-size: 120%;
+    line-height: 1;
+    padding: 0.5em 1em 0.5em 2em;
+    text-decoration: none
+  }
+  /* END page TOC menu panel */
+  code {
+    background-color: transparent;
+    border-left: 7px solid #eee;
+    border-radius: 0
+  }
+  .form__input {
+    min-width: 70%;
+    width: auto
+  }
+  .menu-hamburger {
+    background-color: #222;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 25px;
+    float: right;
+    font-size: 1.2em;
+    margin: 0.5em 0.5em 0 0;
+    padding: 0.2em 0.5em
+  }
+  .page-toc__heading {
+    border-bottom: 0;
+    margin-bottom: 0;
+    padding-top: 2em
+  }
+  .page-toc__item {
+    margin: 0
+  }
+}
+
+/* END phone-and-tablet */
+
+@media only screen and (min-width:520px) {
+  .form__input {
+    max-width: 20em;
+    width: 20em
+  }
+}
+
+/* phone-only */
+
+@media only screen and (max-width:599px) {
+  body {
+    margin: 0 auto
+  }
+  .form--search, .header-main {
+    clear: both;
+    display: block;
+    float: none;
+    width: auto
+  }
+  .form--search {
+    margin: 0 1em 1em 1em
+  }
+  .form__btn-submit {
+    min-width: 1em;
+    width: auto
+  }
+  .form__input {
+    width: 70%
+  }
+  .header-main {
+    padding: 0
+  }
+  main {
+    margin: 0 0 0 3em;
+    padding: 0
+  }
+  .nav-main {
+    padding-top: 0
+  }
+}
+
+/* END phone-only */
+
+/* tablet-portrait-up */
+
+@media only screen and (min-width:600px) {
+  .form--search, .header-main {
+    clear: both;
+    display: block;
+    float: none;
+    margin: 0 auto;
+    margin-bottom: 1em;
+    width: auto
+  }
+  .form--search {
+    max-width: 30em;
+    text-align: center
+  }
+  .header-main__heading {
+    margin: 0;
+    text-align: center
+  }
+  main {
+    margin: 0 17em 0 2em
+  }
+}
+
+/* tablet-landscape-up */
+
+@media only screen and (min-width:900px) {}
+
+/* desktop-up */
+
+@media only screen and (min-width:1200px) {
+  
+}

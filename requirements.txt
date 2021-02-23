@@ -1,0 +1,4 @@
+aiofiles
+fastapi
+mkdocs
+uvicorn[standard]

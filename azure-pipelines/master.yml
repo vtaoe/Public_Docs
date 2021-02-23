@@ -1,0 +1,14 @@
+trigger:
+- master
+
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-18.04'
+  variables:
+    # this is connected to James' Visual Studio Developer Account
+    # AZURE_SUBSCRIPTION: 'Visual Studio Professional Subscription (0b52d8f4-401d-40eb-af15-66003bc50f92)'
+    # AZURE_WEB_APP_NAME: 'AOEDataKnowledgeBase'
+    PIP_CACHE_DIR: $(Pipeline.Workspace)/.pip
+  steps:
+  - template: app-template.yml  # Template reference

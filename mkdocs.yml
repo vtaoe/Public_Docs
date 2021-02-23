@@ -1,0 +1,21 @@
+site_name: Data Collection and Reporting Knowledge Base
+docs_dir: docs
+copyright: '2020'
+
+theme:
+  name: null
+  custom_dir: 'theme'
+  include_search_page: true
+  search_index_only: false
+  static_templates:
+    - 404.html
+
+plugins: ['search']
+markdown_extensions:
+    - toc:
+        permalink: true
+        # marker: "[[_TOC_]]" - pipeline converts from this to expeted default
+
+# add theme version number here
+extra:
+    version: 0.3.x

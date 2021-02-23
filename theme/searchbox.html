@@ -1,0 +1,17 @@
+{% block search %}
+<form class="form form--search" id="search-block-form" action="{{ base_url }}/search.html" method="get" role="search">
+    <div class="container-inline">
+      <p class="element-invisible">Search form</p>
+      <div class="form-item form-type-textfield form-item-search-block-form">
+        <label class="element-invisible" for="mkdocs-search-query">Search Knowledge Base</label>
+        <input title="Enter the terms you wish to search for." type="search" id="mkdocs-search-query"
+          name="q" value="" size="15" aria-label="Search" class="form-text" placeholder="Search Knowledge Base" tabindex="3">
+      </div>
+      <div class="form-actions form-wrapper" id="edit-actions">
+        <input type="submit" id="edit-submit" name="op"
+          value="Search" class="form-submit"></div>
+      <input type="hidden" name="form_id" value="search_block_form">
+    </div>
+  </div>
+</form>
+{% endblock search %}

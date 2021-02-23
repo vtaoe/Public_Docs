@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  {% block htmltitle %}
+  <title>{% if page.title %}{{ page.title }} - {% endif %}{{ config.site_name }}</title>
+  {% endblock htmltitle %}
+
+  {%- block site_meta %}
+  {% if config.site_description %}
+  <meta name="description" content="{{ config.site_description }}">{% endif %}
+  {% if config.site_author %}
+  <meta name="author" content="{{ config.site_author }}">{% endif %}
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {%- endblock %}
+
+  {% block styles %}
+  <!-- <link rel="stylesheet" href="{{ 'css/reset.css'|url }}" type="text/css"> -->
+  <link rel="stylesheet" type="text/css" href="{{ 'css/datatables.min.css'|url }}"/>
+  <link rel="stylesheet" href="{{ 'css/docskimmer.css'|url }}" type="text/css">
+  <link rel="stylesheet" href="{{ 'css/vt.css'|url }}" type="text/css">
+  <link rel="stylesheet" href="{{ 'css/custom.css'|url }}" type="text/css">
+
+  {# enable customization #}
+  {%- for path in config['extra_css'] %}
+  <link href="{{ path|url }}" rel="stylesheet">
+  {%- endfor %}
+  {% endblock styles %}
+
+  <link rel="shortcut icon" href="{{ 'img/favicon.ico'|url }}">
+  <link rel="apple-touch-icon" href="{{ 'img/apple-touch-icon.png'|url }}">
+  <link rel="apple-touch-icon" sizes="72x72" href="{{ 'img/apple-touch-icon-72x72.png'|url }}">
+  <link rel="apple-touch-icon" sizes="114x114" href="{{ 'img/apple-touch-icon-114x114.png'|url }}">
+</head>
+
+{% set active_section = namespace(active=False) %}
+{% for nav_item in nav %}
+  {% if nav_item.children %}
+    {% set site_sections = nav_item.children %}
+    {% for section in site_sections %}
+      {% if section.active %}
+        {% set active_section.children = site_sections %}
+        {% set active_section.active = section.active %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+
+<body class="not-front{% if active_section.active and active_section.children is not none %} one-sidebar{% endif %}">
+  <!-- VT required header -->
+  <div id="top-bar" class="top-bar">
+    <div class="main-column">
+      <span class="top-sov-official">
+        <a href="https://www.vermont.gov">
+          Vermont Official State Website
+        </a>
+      </span>
+      <span class="top-sov-logo">
+        <a href="https://www.vermont.gov">
+          <img src="https://cmo.vermont.gov/themes/custom/uswds_base_subtheme/vermont-logo-white.png"
+            alt="Vermont State Logo" />
+        </a>
+      </span>
+    </div>
+  </div>
+  <header id="header" class="header">
+    <div class="main-column">
+
+      <div id="header-left">
+
+        <div class="header__name-and-slogan" id="name-and-slogan">
+          <div class="header__site-slogan" id="site-slogan">
+            State of Vermont </div>
+
+          <div class="header__site-name" id="site-name">
+            <a href="https://education.vermont.gov/" title="Home" class="header__site-link" rel="home">Agency of
+              Education</a>
+          </div>
+
+        </div> <!-- .header__name-and-slogan -->
+        
+      </div> <!-- / header-left -->
+      <div id="header-right">
+        {% block search %}
+          {% if 'search' in config['plugins'] %}{% include "searchbox.html" %}{% endif %}
+        {% endblock search %}
+      </div>
+
+      {% if config.site_name %}
+        <div class="header-main__heading"><a class="header-main__link" href="{{ nav.homepage.url|url }}">{{ config.site_name }}</a></div>
+      {% endif %}
+    </div> <!-- .main-column -->
+    <div class="main-column">
+      {% include "nav-main.html" %}
+    </div>
+  </header>
+  <a class="skiptocontent" href="#maincontent" title="Skip to content (when browsing via audio)" accesskey="2"
+    tabindex="1">skip to main content</a>
+  <div id="top" class="wrapper">
+    <!-- END subnav -->
+    
+    
+    <main class="maincontent main-column main-section" id="maincontent" role="main">
+      {% block content %}
+        <div id="content" class="column" role="main">
+          <div>
+            {{ page.content }}
+          </div>
+        </div>
+        <aside class="sidebars">
+          {% if active_section.active and active_section.children is not none %}
+            <section class="region region-sidebar-first column sidebar">
+              <div class="block block-system block-menu first last odd" role="navigation">
+                  <ul class="menu" role="complementary" aria-label="Table of Contents for this section">
+                      {% include "section-toc.html" %}
+                  </ul>
+              </div>
+            </section>
+          {% endif %}
+      </aside>
+     
+      {% endblock content %}
+    </main>
+    
+
+    {% block footer %}
+    <footer id="footer">
+      <div>
+        {% if config.copyright %}
+          <span>
+          Copyright © {{ config.copyright }} State of Vermont. All rights reserved.
+          </span>
+        {% endif %}
+        <span>
+          <a href="https://www.vermont.gov/policies" target="_new">Policies</a> |
+          <a href="https://www.vermont.gov/policies/accessibility" target="_new">Accessibility Policy</a> |
+          <a href="https://www.vermont.gov/policies/privacy" target="_new">Privacy Policy</a> |
+          <a href="https://appengine.egov.com/apps/vt/sov/survey" target="_blank">Feedback Survey</a>
+        </span>
+      </div>
+    </footer>
+    {% endblock footer %}
+  </div><!-- END .wrapper -->
+  <!--
+  <a class="skiptotop" href="#top">back to top</a>
+  -->
+  {% block analytics %}
+  {% if config.google_analytics %}
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', '{{ config.google_analytics[0] }}', '{{ config.google_analytics[1] }}');
+    ga('send', 'pageview');
+  </script>
+  {% endif %}
+  {% endblock analytics %}
+
+  {%- block scripts %}
+  <script>var base_url = '{{ base_url }}';</script>
+  <script type="text/javascript" charset="utf8" src="{{ 'js/jquery-2.2.4.min.js'|url }}"></script>
+  <script type="text/javascript" src="{{ 'js/datatables.min.js'|url }}"></script>
+  <script type="text/javascript" src="{{ 'js/index.js'|url }}"></script>
+
+  {# enable customization #}
+  {%- for path in config['extra_javascript'] %}
+  <script src="{{ path|url }}"></script>
+  {%- endfor %}
+  {% endblock scripts %}
+
+  <!--
+  MkDocs version : {{ mkdocs_version }}
+  docSkimmer theme version: {{ config.extra.version }}
+  Build Date UTC : {{ build_date_utc }}
+  -->
+</body>
+
+</html>

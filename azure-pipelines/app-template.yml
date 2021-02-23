@@ -1,0 +1,86 @@
+# this is the base template all others should extend
+# the following variables must be set for this template to work
+# variables:
+  # AZURE_SUBSCRIPTION: YouSetThis
+  # AZURE_WEB_APP_NAME: YouSetThis
+  
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.7'
+  displayName: 'Use Python 3.7'
+
+- task: Cache@2
+  inputs:
+    key: 'python | "$(Agent.OS)" | requirements.txt'
+    restoreKeys: | 
+      python | "$(Agent.OS)"
+      python
+    path: $(PIP_CACHE_DIR)
+  displayName: Install/Cache pip packages
+- script: |
+    python -m venv antenv
+    source antenv/bin/activate
+    python -m pip install --upgrade pip
+    pip install setup
+    pip install -r requirements.txt
+
+- bash: |
+    find docs -type f -exec sed -i 's/\[\[_TOC_\]\]/\[TOC\]/g' {} \;
+  displayName: Convert TOC for mkdocs
+
+- bash: |
+    source antenv/bin/activate
+    mkdocs build
+  displayName: Build Site with mkdocs
+
+- task: CopyFiles@2
+  displayName: Copy attachments to built site
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/docs/.attachments'
+    Contents: '**'
+    TargetFolder: '$(Build.SourcesDirectory)/site/.attachments'
+
+- task: CopyFiles@2
+  displayName: Copy site to artifacts
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/site'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/site'
+
+- task: PublishPipelineArtifact@1
+  displayName: Publish Artifacts
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/site'
+    artifact: 'static_site'
+    publishLocation: 'pipeline'
+
+- task: CmdLine@2
+  displayName: Run a11y accessibility test
+  inputs:
+    script: shopt -s globstar && npx pa11y-ci --config pa11y-config.json ./site/**/*.html
+
+
+# create an archive we'll publish as an app
+- task: ArchiveFiles@2
+  inputs:
+     rootFolderOrFile: '$(Build.SourcesDirectory)'
+     includeRootFolder: false
+     archiveType: 'zip'
+     archiveFile: '$(Build.ArtifactStagingDirectory)/Application$(Build.BuildId).zip'
+     replaceExistingArchive: true
+- publish: '$(Build.ArtifactStagingDirectory)/Application$(Build.BuildId).zip'
+  displayName: 'Upload package'
+  artifact: drop
+
+# deploy
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: '$(AZURE_SUBSCRIPTION)'
+    appType: 'webAppLinux'
+    WebAppName: '$(AZURE_WEB_APP_NAME)'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/Application$(Build.BuildId).zip'
+    RuntimeStack: 'PYTHON|3.7'
+    StartupCommand: 'python -m uvicorn --host 0.0.0.0 --workers 4 main:app'
+        

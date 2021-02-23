@@ -1,0 +1,63 @@
+# this is the base template all others should extend
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.7'
+  displayName: 'Use Python 3.7'
+
+- bash: echo "##vso[task.prependpath]$CONDA/bin"
+  displayName: Add conda to PATH
+
+- script: conda env create --name mkdocs --quiet --file environment.yml
+  displayName: Create Anaconda environment
+
+- bash: |
+    find docs -type f -exec sed -i 's/\[\[_TOC_\]\]/\[TOC\]/g' {} \;
+  displayName: Convert TOC for mkdocs
+
+- bash: |
+    source activate mkdocs
+    mkdocs build
+  displayName: Build Site with mkdocs
+
+- task: CopyFiles@2
+  displayName: Copy attachments to built site
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/docs/.attachments'
+    Contents: '**'
+    TargetFolder: '$(Build.SourcesDirectory)/site/.attachments'
+
+- task: CopyFiles@2
+  displayName: Copy site to artifacts
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/site'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/site'
+- task: PublishPipelineArtifact@1
+  displayName: Publish Artifacts
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/site'
+    artifact: '$(ARTIFACT_NAME)'
+    publishLocation: 'pipeline'
+
+- task: CmdLine@2
+  displayName: Run a11y accessibility test
+  inputs:
+    script: shopt -s globstar && npx pa11y-ci --config pa11y-config.json ./site/**/*.html
+
+- task: AzureCLI@2
+  displayName: Clear Azure Blob Storage
+  inputs:
+    azureSubscription: 'Visual Studio Professional Subscription(0b52d8f4-401d-40eb-af15-66003bc50f92)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: az storage blob delete-batch --account-name "$STORAGE_ACCOUNT_NAME" --source '$web'
+
+- task: AzureCLI@2
+  displayName: Publish Site To Azure Blob Storage
+  inputs:
+    azureSubscription: 'Visual Studio Professional Subscription(0b52d8f4-401d-40eb-af15-66003bc50f92)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: az storage blob upload-batch -d "\$web" --account-name "$STORAGE_ACCOUNT_NAME" -s ./site
